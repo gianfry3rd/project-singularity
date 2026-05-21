@@ -1,0 +1,6 @@
+polkit.addRule(function(action, subject) {
+    if (action.id == "net.hadess.PowerProfiles.switch-profile" &&
+        subject.isInGroup("wheel")) {
+        return polkit.Result.YES;
+    }
+});
