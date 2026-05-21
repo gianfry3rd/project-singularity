@@ -1,89 +1,53 @@
 ---
 name: singularity
-description: >
-  Fedora Atomic Hyprland image for AMD Ryzen 5800 iGPU laptop.
-  Minimal daily-driver system with KVM, fingerprint, and full Wayland stack.
+description: Fedora Atomic Hyprland image for AMD Ryzen 5800 iGPU laptop
 base-image: ghcr.io/ublue-os/base-main
 image-version: 42
 
 modules:
 
-  # ── Packages ────────────────────────────────────────────────────────────────
   - type: rpm-ostree
     install:
-      # Hyprland compositor
       - hyprland
-      - hyprpaper
-      - hyprlock
-      - hypridle
-      # XDG portal backends for Hyprland (file picker, screen share, etc.)
       - xdg-desktop-portal-hyprland
       - xdg-desktop-portal-gtk
       - xdg-user-dirs
-      # Status bar
+      - hyprpaper
+      - hyprlock
+      - hypridle
       - waybar
-      # Application launcher (Wayland-capable)
       - rofi
-      # Terminal
       - foot
-      # Notification daemon (Wayland-native)
       - mako
-      # Screenshot + region selection
       - grim
       - slurp
-      # Clipboard (Wayland)
       - wl-clipboard
-      # Polkit authentication agent for Wayland sessions
       - polkit-gnome
-      # Display / login manager
       - greetd
       - greetd-tuigreet
-      # Fonts (minimal Unicode + emoji coverage)
       - noto-fonts
       - noto-fonts-emoji
-      # Qt Wayland integration (Qt apps run natively on Wayland)
       - qt5-qtwayland
       - qt6-qtwayland
-      # XWayland (X11 application compatibility layer)
       - xorg-x11-server-Xwayland
-      # Network tray applet
       - NetworkManager-applet
-
-      # ── Bluetooth ─────────────────────────────────────────────────────────
-      # Hardware: Realtek RTL8761B (0bda:b00c) — firmware in linux-firmware
       - bluez
       - bluez-tools
       - blueman
-
-      # ── Audio (PipeWire stack) ─────────────────────────────────────────────
       - pipewire
       - pipewire-alsa
       - pipewire-pulseaudio
       - pipewire-jack-audio-connection-kit
       - wireplumber
       - pavucontrol
-
-      # ── Laptop hardware ────────────────────────────────────────────────────
       - brightnessctl
       - power-profiles-daemon
-
-      # ── Fingerprint ───────────────────────────────────────────────────────
-      # Hardware: ELAN ARM-M4 (04f3:0c00) — supported by libfprint elan driver
       - fprintd
-
-      # ── Webcam ────────────────────────────────────────────────────────────
-      # Hardware: Luxvisions HP TrueVision HD (30c9:0064) — UVC standard
       - v4l-utils
-
-      # ── AMD iGPU ──────────────────────────────────────────────────────────
       - mesa-va-drivers
       - mesa-vdpau-drivers
       - radeontop
-
-      # ── System monitoring ─────────────────────────────────────────────────
       - btop
-
-      # ── KVM / Virtualization ──────────────────────────────────────────────
       - qemu-kvm
       - libvirt
       - libvirt-client
@@ -95,24 +59,12 @@ modules:
       - edk2-ovmf
       - swtpm
       - swtpm-tools
-
-      # ── System utilities ──────────────────────────────────────────────────
       - bash-completion
       - man-db
       - rsync
       - unzip
       - zip
-      - file
-      - lsof
-      - util-linux-user
 
-  # ── Static system files ─────────────────────────────────────────────────────
-  - type: files
-    files:
-      - source: system/
-        destination: /
-
-  # ── Systemd units ───────────────────────────────────────────────────────────
   - type: systemd
     system:
       enabled:
@@ -120,14 +72,6 @@ modules:
         - fprintd.service
         - power-profiles-daemon.service
         - greetd.service
-        # libvirt uses socket activation in modern Fedora
         - libvirtd.socket
         - libvirtd-ro.socket
         - libvirtd-admin.socket
-
-  # ── Build-time setup scripts ────────────────────────────────────────────────
-  - type: script
-    scripts:
-      - setup-laptop.sh
-      - setup-fingerprint.sh
-      - setup-kvm.sh
