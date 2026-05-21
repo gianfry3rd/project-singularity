@@ -6,6 +6,10 @@ image-version: 42
 
 modules:
 
+  - type: containerfile
+    snippets:
+      - RUN rm -f /etc/yum.repos.d/negativo17-fedora-multimedia.repo
+
   - type: rpm-ostree
     install:
       - hyprland
