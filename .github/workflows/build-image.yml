@@ -36,7 +36,7 @@ jobs:
       fail-fast: false
       matrix:
         recipe:
-          - laptop-hyprland.yml
+          - recipes/laptop-hyprland.yml
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -44,7 +44,7 @@ jobs:
       - name: Build image with BlueBuild
         uses: blue-build/github-action@v1
         with:
-          recipe: recipes/${{ matrix.recipe }}
+          recipe: ${{ matrix.recipe }}
           cosign_private_key: ${{ secrets.COSIGN_KEY }}
           registry_token: ${{ github.token }}
           pr_event_number: ${{ github.event.number }}
