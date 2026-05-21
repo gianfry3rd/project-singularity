@@ -1,0 +1,47 @@
+# Singularity — Laptop Hardware & Build Configuration Reference
+# This file is NOT consumed by the build system.
+# It documents hardware-specific choices and build parameters.
+
+[hardware]
+cpu        = "AMD Ryzen 7 5800"
+gpu        = "AMD Radeon (integrated — Cezanne/Barcelo)"
+nvidia     = false
+dgpu       = false
+
+[hardware.usb_devices]
+fingerprint = "04f3:0c00  ELAN Microelectronics ELAN:ARM-M4"
+bluetooth   = "0bda:b00c  Realtek Semiconductor RTL8761B"
+webcam      = "30c9:0064  Luxvisions Innotech HP TrueVision HD Camera"
+
+[build]
+base_image     = "ghcr.io/ublue-os/base-main"
+fedora_version = 42
+image_name     = "singularity"
+# Final image pushed to: ghcr.io/gianfry3rd/singularity
+
+[features]
+hyprland          = true
+kvm               = true
+fingerprint       = true   # sensor: ELAN 04f3:0c00 — verify on libfprint list
+bluetooth         = true   # firmware: linux-firmware (rtl8761b)
+webcam            = true   # driver: UVC (kernel built-in)
+wayland_portals   = true
+nested_virt_amd   = true
+
+[power]
+daemon          = "power-profiles-daemon"
+default_profile = "balanced"
+# Profiles: performance | balanced | power-saver
+# Switch: powerprofilesctl set <profile>
+
+[virtualization]
+type            = "KVM/QEMU + libvirt"
+nested_virt     = true    # enabled via /etc/modprobe.d/kvm-amd.conf
+iommu           = false   # not needed without GPU passthrough
+vfio            = false
+default_network = "virbr0 NAT 192.168.122.0/24"
+
+[display]
+manager    = "greetd"
+greeter    = "tuigreet"
+compositor = "hyprland"

@@ -1,0 +1,52 @@
+name: Build Image
+
+on:
+  schedule:
+    # Rebuild daily at 06:00 UTC to pick up base image and package updates
+    - cron: '0 6 * * *'
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '**.md'
+      - '.gitignore'
+      - 'config/**'
+  pull_request:
+    branches:
+      - main
+    paths-ignore:
+      - '**.md'
+      - '.gitignore'
+      - 'config/**'
+  workflow_dispatch:
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build and push OCI image
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+    strategy:
+      fail-fast: false
+      matrix:
+        recipe:
+          - laptop-hyprland.yml
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build image with BlueBuild
+        uses: blue-build/github-action@v1
+        with:
+          recipe: recipes/${{ matrix.recipe }}
+          cosign_private_key: ${{ secrets.COSIGN_KEY }}
+          registry_token: ${{ github.token }}
+          pr_event_number: ${{ github.event.number }}
+          maximize_build_space: true
+          use_cache: false

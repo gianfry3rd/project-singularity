@@ -1,0 +1,18 @@
+# Cosign private key — NEVER commit
+cosign.key
+
+# Build artifacts
+*.iso
+*.qcow2
+*.img
+*.raw
+*.vmdk
+
+# OS / editor artifacts
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.idea/
+.vscode/settings.json
